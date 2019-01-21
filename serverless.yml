@@ -38,6 +38,7 @@ functions:
       - http:
           path: shop
           method: get
+          cors: true
   userSignup:
     handler: api/user/signup.handler
     description: User signup handler
@@ -45,6 +46,7 @@ functions:
       - http:
           path: user
           method: post
+          cors: true
   userLogin:
     handler: api/user/login.handler
     description: User login handler
@@ -52,6 +54,7 @@ functions:
       - http:
           path: login
           method: post
+          cors: true
 
 resources:
   Resources:

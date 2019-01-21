@@ -1,13 +1,14 @@
 const jwt = require('jsonwebtoken')
 const AWS = require('aws-sdk')
 const bcrypt = require('bcryptjs')
+const middy = require('middy')
+const { cors } = require('middy/middlewares')
 
 AWS.config.setPromisesDependency(require('bluebird'))
 const dynamoDb = new AWS.DynamoDB.DocumentClient()
 const JWT_EXPIRATION_TIME = '999 days'
 
 const findUser = async (email, password) => {
-    // return user or null
     const params = {
         Key: {
             "email": email
@@ -25,8 +26,9 @@ const findUser = async (email, password) => {
     }
 }
 
-module.exports.handler = async (event, context, cb) => {
-    const { email, password } = JSON.parse(event.body)
+const login = async (event, context, cb) => {
+    const requestBody = JSON.parse(event.body)
+    const { email, password } = requestBody
 
     try {
         const user = await findUser(email, password)
@@ -36,19 +38,22 @@ module.exports.handler = async (event, context, cb) => {
         })
         cb(null, {
             statusCode: 200,
-            headers: {
-                'Access-Control-Allow-Origin': '*'
-            },
-            body: JSON.stringify({user, token})
+            body: JSON.stringify({
+                user,
+                token
+            })
         })
     }
     catch (e) {
         cb(null, {
             statusCode: 401,
-            headers: {
-                'Access-Control-Allow-Origin': '*'
-            },
             body: JSON.stringify({error: e.message})
         })
     }
+}
+
+const handler = middy(login).use(cors())
+
+module.exports = {
+    handler
 }

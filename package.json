@@ -4,6 +4,7 @@
     "bcryptjs": "^2.4.3",
     "bluebird": "^3.5.3",
     "jsonwebtoken": "^8.4.0",
+    "middy": "^0.20.0",
     "uuid": "^3.3.2"
   }
 }

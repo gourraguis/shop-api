@@ -1,6 +1,8 @@
 const uuid = require('uuid')
 const AWS = require('aws-sdk')
 const bcrypt = require('bcryptjs')
+const middy = require('middy')
+const { cors } = require('middy/middlewares')
 
 AWS.config.setPromisesDependency(require('bluebird'))
 const dynamoDb = new AWS.DynamoDB.DocumentClient()
@@ -14,7 +16,7 @@ const submitUser = user => {
         .then(() => user)
 }
 
-module.exports.handler = async (event, context, cb) => {
+const signup = async (event, context, cb) => {
     const requestBody = JSON.parse(event.body)
     const { email, password } = requestBody
     if (typeof email !== 'string' || typeof password !== 'string') {
@@ -52,4 +54,10 @@ module.exports.handler = async (event, context, cb) => {
             })
         })
     }
+}
+
+const handler = middy(signup).use(cors())
+
+module.exports = {
+    handler
 }
