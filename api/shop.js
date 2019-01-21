@@ -1,5 +1,7 @@
+const middy = require('middy')
+const { cors } = require('middy/middlewares')
 
-module.exports.list = (event, context, cb) => {
+const list = (event, context, cb) => {
     const shops = dummyData().sort((a, b) => a.distance - b.distance)
     const response = {
         statusCode: 200,
@@ -50,3 +52,9 @@ const dummyData = () => ([
         image: "https://images.unsplash.com/photo-1507914372368-b2b085b925a1"
     },
 ])
+
+const handler = middy(list).use(cors())
+
+module.exports = {
+    list: handler
+}

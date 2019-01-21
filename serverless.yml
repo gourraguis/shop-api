@@ -31,6 +31,8 @@ provider:
       Resource: "*"
 
 functions:
+  authorize:
+    handler: api/authorize.handler
   listShops:
     handler: api/shop.list
     description: List all the available shops
@@ -39,6 +41,7 @@ functions:
           path: shop
           method: get
           cors: true
+          authorizer: authorize
   userSignup:
     handler: api/user/signup.handler
     description: User signup handler
